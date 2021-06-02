@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Hand Digits{% endblock %}
+{% block import %}
+    <link rel="stylesheet" href="static/css/index.css">
+    <link rel="icon" class="tab-icon" href='static/img/icon-digits.svg'>
+{% endblock %}
+
+{% block body %}
+    <div class="container text-center">
+        <div class="header-text mt-3">
+            <h1 class="fw-bold" >Hello!</h1>
+            <h2>My name is Zero!</h2>
+            <h2 class="fw-light">Send me a digit!</h2>
+        </div>
+        <div class="row center">
+            <form action="/" method="post" enctype = 'multipart/form-data'>
+                <div class="input-group mb-3 mt-4 w-50 col-md-auto center">
+                    <input type="file" name="img" class="form-control" id="inputGroupFile02">
+                    <input type="submit" value="Test me!" class="input-group-text" for="inputGroupFile02">
+                </div>
+            </form>
+        </div>
+        <div class ="predict text-center center mt-3">
+            {% if pred > -1 %}
+                <h3 class ="predict-text">I think the digit is {{ pred }}!!!</h3>
+                <img src="static/img/upload.jpg" class="img-thumbnail rounded img mt-2" alt="...">
+            {% elif pred == -2 %}
+                <h3 class ="predict-text">You didn't send me anything...</h3>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
