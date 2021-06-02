@@ -6,7 +6,6 @@ import json
 import requests
 
 # ml
-import keras
 import numpy as np
 from PIL import Image
 import pandas as pd
@@ -21,38 +20,12 @@ app.config["CACHE_TYPE"] = "null"
 app.config.update( DEBUG=True, TEMPLATES_AUTO_RELOAD=True)
 
 # start here
-@app.route('/', methods=["POST", "GET"])
-def index():
-    num = -1
-    img = -1
-    if request.method == "POST":
-        if request.files.get('img', ''):
-            img = request.files.get('img', '')
-            if img:
-                path = os.path.join('static/img', "upload.jpg")
-                img.save(path)
+@app.route('/')
+def home():
+    return redirect(url_for('seattle'))
 
-                img = Image.open(path).convert('L')
-                img = img.resize((28, 28), Image.ANTIALIAS)
-                path = os.path.join('static/img', "digit.jpg")
-                img.save(path)
-                data = ((np.asarray(img)) / 255.0)
-                model = keras.models.load_model("digits_model.h5")
-                # pred = model.predict_classes(data.reshape(1, 28, 28))
-                pred = model.predict_classes(data.reshape(-1, 28 * 28))
-                print(pred)
-                num = pred[0]
-            else:
-                print(f"Nao enviou img")
-                num = -2
-        else:
-            print(f"Nao enviou")
-            num = -2
-
-    return render_template("index.html", pred=num, disp=img)
-
-@app.route('/housing', methods=["POST", "GET"])
-def housing_prices():
+@app.route('/seattle', methods=["POST", "GET"])
+def seattle():
     pkl_filename = "house_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
@@ -153,8 +126,9 @@ def housing_prices():
         folium.Marker([lat, long], popup=pop, tooltip=tooltip, icon=folium.Icon(color='cadetblue', icon='home', prefix='fa')).add_to(map)
 
     map.save("templates/map.html")
-
-    return render_template("housing.html", pred_form = price)
+    title = "Seatle Housing"
+    return render_template("housing.html", pred_form = price, title= title)
+    
 
 @app.route('/map')
 def map():
