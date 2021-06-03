@@ -22,7 +22,7 @@ app.config.update( DEBUG=True, TEMPLATES_AUTO_RELOAD=True)
 # start here
 @app.route('/')
 def home():
-    return redirect(url_for('seattle'))
+    return redirect(url_for('london'))
 
 @app.route('/seattle', methods=["POST", "GET"])
 def seattle():
@@ -129,6 +129,81 @@ def seattle():
     title = "Seatle Housing"
     return render_template("housing.html", pred_form = price, title= title)
     
+@app.route('/london', methods=["POST", "GET"])
+def london():
+    pkl_filename = "house_model.pkl"
+    with open(pkl_filename, 'rb') as file:
+        model = pickle.load(file)
+
+    map = folium.Map(location=[51.509865, -0.118092], tiles="OpenStreetMap", zoom_start=10.5)
+    price = -1
+    if request.method == "POST":
+        lat_form = request.form['lat']
+        long_form = request.form['long']
+        bed = request.form['inputbed']
+        bath = request.form['inputbath']
+        sqft_l = request.form['inputsq']
+        sqft_lot = request.form['inputsqlot']
+        floor = request.form['inputfloor']
+        water = request.form["inputwt"]
+        view = request.form["inputview"]
+        cond = request.form["inputcond"]
+        grade = request.form["inputgrade"]
+        sqft_a = request.form["inputabove"]
+        sqft_b = request.form["inputbase"]
+        year = request.form["inputyear"]
+        reno = request.form["inputreno"]
+        zip = request.form["inputzip"]
+        sq_15 = request.form["inputl15"]
+        sq_lot15 = request.form["inputlo15"]
+
+        print(lat_form, long_form, bed, bath, sqft_l, sqft_lot, floor, water, view, cond,
+              grade, sqft_a, sqft_b, year, reno, zip, sq_15, sq_lot15)
+
+        data={'date': [1],'bedrooms': [bed],'bathrooms':[bath],
+        'sqft_living':[sqft_l],'sqft_lot':[sqft_lot],'floors':[floor],
+        'waterfront':[water],'view':[view],'condition':[cond],'grade':[grade],
+        'sqft_above':[sqft_a],'sqft_basement':[sqft_b],'yr_built':[year],'yr_renovated':[reno],
+        'zipcode':[zip],'lat':[lat_form],'long':[long_form],
+        'sqft_living15':[sq_15],'sqft_lot15':[sq_lot15]}
+        # Create DataFrame
+        df = pd.DataFrame(data)
+        pred_price_form = model.predict(df).round(1)
+        price = pred_price_form[0]
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Sqft: {sqft_lot}sq<br>N floors: {floor}<br>N beds: {bed}<br>N bath: {bath}<br>Pred. price: {pred_price_form[0]}$ </i>"
+        iframe = folium.IFrame(str, width=200, height=120)
+        pop = folium.Popup(iframe, max_width=200)
+        folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
+                      icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
+
+    style = {
+        "fillOpacity": 0.1,
+    }
+
+    with open('london_boroughs.json') as json_file:
+        london = json.load(json_file) #url = "https://skgrange.github.io/www/data/london_boroughs.json"
+
+    folium.GeoJson(london, name="london", style_function= lambda x : style, tooltip=folium.features.GeoJsonTooltip(fields=['name',],sticky=False, labels=False, localize=True)).add_to(map)
+    folium.LayerControl().add_to(map)
+
+    poi = pd.read_csv("POI_London.csv")
+    i = 0
+    pos_vector = []
+    while(True):
+        index = randint(0, 28205)
+        if index in pos_vector:
+            continue
+        pos_vector.append(index)
+        row = poi.iloc[index]
+        cm = folium.CircleMarker(location=[row.Lat, row.Long], radius=5,tooltip=row.category, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
+        map.add_child(cm)
+        i += 1
+        if i == 100:
+            break
+
+    map.save("templates/map.html")
+    title = "London Housing"
+    return render_template("housing.html", pred_form = price, title= title)
 
 @app.route('/map')
 def map():
