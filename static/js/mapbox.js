@@ -2,18 +2,30 @@ var geocodingClient = mapboxSdk({
     accessToken:
         "pk.eyJ1Ijoibmlja25hbWUyMSIsImEiOiJja2xmNGwxbGUwa3o5Mm9wMGs4cXlqMXNkIn0.Kw8taLGhoDnjr8qXaDz2KA",
 });
+var country;
+var box;
+
+function getParams(html_country, html_box)
+{
+    country = html_country;
+    box = html_box;
+}
 
 function autocompleteSuggestionMapBoxAPI(inputParams, callback) {
+    console.log(country);
+    console.log(box);
     geocodingClient.geocoding
         .forwardGeocode({
             query: inputParams,
-            countries: ["us"],
-            bbox: [
-                -124.862197896945,
-                45.5435400017256,
-                -116.916070668425,
-                49.0121490866648,
-            ],
+            //countries: ["us"],
+            countries: [country],
+            bbox: box,
+            //bbox: [
+            //    -124.862197896945,
+            //    45.5435400017256,
+            //    -116.916070668425,
+            //    49.0121490866648,
+            //],
             types: ['address'],
             autocomplete: true,
             limit: 5,
@@ -71,22 +83,6 @@ function autocompleteInputBox(inp) {
                                 break;
                             }
                         }
-                        /*
-                        var frame = document.getElementById("frame-map");
-                        var map_id = frame.contentWindow.document.getElementsByClassName("folium-map")[0].id;
-                        console.log(map_id);
-                        var map = window[map_id];
-                        var frame_map = frame.contentWindow.document.getElementById(map_id).contentWindow.m;
-                        L.marker([lat, long], {opacity: .4}).addTo(frame_map);
-                        */
-
-                        /*
-                        var a = document.createElement('a');
-                        a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(key)));
-                        a.setAttribute('download', 'filename.json');
-                        a.click()
-                        */
-
                         inp.value = $(this).find("input").val();
                         $(inp).attr("data-lat", lat);
                         $(inp).attr("data-lng", long);
