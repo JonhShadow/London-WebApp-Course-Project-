@@ -13,6 +13,9 @@ from random import randint
 import pickle
 from sklearn.ensemble import GradientBoostingRegressor
 
+# utils
+from util import *
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -131,7 +134,7 @@ def seattle():
     
 @app.route('/london', methods=["POST", "GET"])
 def london():
-    pkl_filename = "house_model.pkl"
+    pkl_filename = "GbFinal_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -140,37 +143,29 @@ def london():
     if request.method == "POST":
         lat_form = request.form['lat']
         long_form = request.form['long']
-        bed = request.form['inputbed']
-        bath = request.form['inputbath']
-        sqft_l = request.form['inputsq']
-        sqft_lot = request.form['inputsqlot']
-        floor = request.form['inputfloor']
-        water = request.form["inputwt"]
-        view = request.form["inputview"]
-        cond = request.form["inputcond"]
-        grade = request.form["inputgrade"]
-        sqft_a = request.form["inputabove"]
-        sqft_b = request.form["inputbase"]
-        year = request.form["inputyear"]
-        reno = request.form["inputreno"]
-        zip = request.form["inputzip"]
-        sq_15 = request.form["inputl15"]
-        sq_lot15 = request.form["inputlo15"]
+        zip = PostalCodeToLable(request.form['inputzip'])
+        bed = int(request.form['inputbed'])
+        bath = int(request.form['inputbath'])
+        recep = int(request.form['inputRecep'])
+        houseType = HouseTypeToLable(request.form['inputHouseType'])
+        sqft = int(request.form['inputsq'])
+        distLondon = distanceToLondon(lat_form, long_form)
+        crime = getCrime(request.form['inputzip'])
+        distHosp = distanceToHospital(lat_form, long_form)
+        distSub = distanceToSubway(lat_form, long_form)
+        distSchool = distanceToSchool(lat_form, long_form)
+        
 
-        print(lat_form, long_form, bed, bath, sqft_l, sqft_lot, floor, water, view, cond,
-              grade, sqft_a, sqft_b, year, reno, zip, sq_15, sq_lot15)
-
-        data={'date': [1],'bedrooms': [bed],'bathrooms':[bath],
-        'sqft_living':[sqft_l],'sqft_lot':[sqft_lot],'floors':[floor],
-        'waterfront':[water],'view':[view],'condition':[cond],'grade':[grade],
-        'sqft_above':[sqft_a],'sqft_basement':[sqft_b],'yr_built':[year],'yr_renovated':[reno],
-        'zipcode':[zip],'lat':[lat_form],'long':[long_form],
-        'sqft_living15':[sq_15],'sqft_lot15':[sq_lot15]}
+        data={'HouseType': houseType,'Areainsqft':sqft,'No.ofBedrooms': bed,'No.ofBathrooms': bath,'No.ofReceptions':recep,
+                    'distance_to_london':distLondon,'NCrime':crime, 'DisToHospital':distHosp, 'DisToSubway':distSub, 'DisToShool':distSchool, 'PostalCode':zip}
+        
+        print(data)
         # Create DataFrame
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data, index=[0])
         pred_price_form = model.predict(df).round(1)
         price = pred_price_form[0]
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Sqft: {sqft_lot}sq<br>N floors: {floor}<br>N beds: {bed}<br>N bath: {bath}<br>Pred. price: {pred_price_form[0]}$ </i>"
+        
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Pred. price: {price}$ </i>"
         iframe = folium.IFrame(str, width=200, height=120)
         pop = folium.Popup(iframe, max_width=200)
         folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
@@ -186,6 +181,7 @@ def london():
     folium.GeoJson(london, name="london", style_function= lambda x : style, tooltip=folium.features.GeoJsonTooltip(fields=['name',],sticky=False, labels=False, localize=True)).add_to(map)
     folium.LayerControl().add_to(map)
 
+    #adding 100 random pois to the map
     poi = pd.read_csv("POI_London.csv")
     i = 0
     pos_vector = []
@@ -195,10 +191,46 @@ def london():
             continue
         pos_vector.append(index)
         row = poi.iloc[index]
-        cm = folium.CircleMarker(location=[row.Lat, row.Long], radius=5,tooltip=row.category, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
+        cm = folium.CircleMarker(location=[row.lat, row.long], radius=5,tooltip=row.name, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
         map.add_child(cm)
         i += 1
-        if i == 100:
+        if i == 50:
+            break
+    
+    data = pd.read_csv('LondonFinalLable.csv')
+    
+    tooltip = "Click for house stats"
+    
+    pos = []
+    count = 0
+    while(True):
+        i = randint(0, 3400)
+        if i in pos:
+            continue
+        pos.append(i)
+        lat = data.lat[i]
+        long = data.long[i]
+
+        houseType = data.HouseType[i]
+        bed = data.NoofBedrooms[i]
+        bath = data.NoofBathrooms[i]
+        sqft = data.Areainsqft[i]
+        disCenter = data.distance_to_london[i].round(1)
+        real_price = data.Price[i].round(1)
+
+        x= data.iloc[[i]]
+        x = x[['HouseTypeLabel','Areainsqft','NoofBedrooms','NoofBathrooms','NoofReceptions',
+                    'distance_to_london','NCrime', 'DisToHospital', 'DisToSubway', 'DisToShool', 'PostalCodeLabel']]
+
+
+        pred_price = model.predict(x).round(1)
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {disCenter}km<br>Price: {real_price}$<br>Pred. price: {pred_price[0]}$ </i>"
+
+        iframe = folium.IFrame(str, width=260, height=120)
+        pop = folium.Popup(iframe, max_width=300)
+        folium.Marker([lat, long], popup=pop, tooltip=tooltip, icon=folium.Icon(color='cadetblue', icon='home', prefix='fa')).add_to(map)
+        count += 1
+        if count == 100:
             break
 
     map.save("templates/map.html")
