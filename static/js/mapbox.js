@@ -4,16 +4,50 @@ var geocodingClient = mapboxSdk({
 });
 var country;
 var box;
+var zipList;
 
-function getParams(html_country, html_box)
+function getParams(html_country, html_box, list)
 {
     country = html_country;
     box = html_box;
+    zipList = list;
+}
+
+function checkPostalcode(mapboxZip)
+{
+    var btn = document.getElementById('submit');
+    var bool = zipList.includes(mapboxZip);
+    console.log(bool);
+
+    if( bool == true)
+    {
+        document.getElementById('inputzip').style.backgroundColor = "";
+        document.getElementById('inputzip').title = "";
+
+        btn.style.backgroundColor = "";
+        btn.disabled = false;
+        btn.title = "Click for price predict";
+
+        document.getElementById('notLondonDiv').style.display = "none";
+    }
+    else
+    {
+        console.log("Zip not in mist");
+        document.getElementById('inputzip').style.backgroundColor = "#ff8080";
+        document.getElementById('inputzip').title = "This house is not in Greater London"
+        
+        btn.style.backgroundColor = "lightgrey";
+        btn.disabled = true;
+        btn.title = "";
+
+        document.getElementById('notLondonDiv').style.display = "block";
+
+    }
+
+
 }
 
 function autocompleteSuggestionMapBoxAPI(inputParams, callback) {
-    console.log(country);
-    console.log(box);
     geocodingClient.geocoding
         .forwardGeocode({
             query: inputParams,
@@ -80,9 +114,13 @@ function autocompleteInputBox(inp) {
                         for (const x in key.context) {
                             if (key.context[x].id.includes("postcode")) {
                                 document.getElementById('inputzip').value = key.context[x].text;
+                                checkPostalcode(key.context[x].text);
                                 break;
                             }
                         }
+
+                        
+
                         inp.value = $(this).find("input").val();
                         $(inp).attr("data-lat", lat);
                         $(inp).attr("data-lng", long);
@@ -153,7 +191,7 @@ function autocompleteInputBox(inp) {
     /*execute a function when someone clicks in the document:*/
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
-        console.log(document.getElementById("myInput"))
+        //console.log(document.getElementById("myInput"))
     });
 }
 

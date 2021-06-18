@@ -1,5 +1,6 @@
 from geopy import distance
 import pandas as pd
+from math import isnan
 
 def distanceToLondon(lat, long):
     london = (51.5085300, -0.1257400)
@@ -14,7 +15,10 @@ def getCrime(code):
     london = pd.read_csv('LondonFinalLable.csv')
       
     crime = london[london['PostalCode'].astype(str).str.contains(code)]
-    return crime['NCrime'].iloc[0]
+    if crime.empty:
+        return 28484.71875
+    else:
+        return crime['NCrime'].iloc[0]
 
 def distanceToHospital(lat,long):
     poi_hospital = pd.read_csv("POI_Hospital.csv")
@@ -56,10 +60,7 @@ def HouseTypeToLable(house):
     return label['HouseTypeLabel'].iloc[0]
 
 def PostalCodeToLable(code):
-    london = pd.read_csv('LondonFinalLable.csv')
-    london = london[['PostalCodeLabel']]
-    
-    return max(london['PostalCodeLabel']+1)
-
-
-#print(HouseTypeToLable('House'))
+    print(code)
+    postalcode = pd.read_csv('PostCodeLabel.csv')
+    post = postalcode[postalcode['Postcode'] == code]
+    return  post['Label'].iloc[0]

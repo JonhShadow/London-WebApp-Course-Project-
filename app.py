@@ -134,7 +134,7 @@ def seattle():
     
 @app.route('/london', methods=["POST", "GET"])
 def london():
-    pkl_filename = "GbFinal_model.pkl"
+    pkl_filename = "GbFinalLabel_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -149,7 +149,7 @@ def london():
         recep = int(request.form['inputRecep'])
         houseType = HouseTypeToLable(request.form['inputHouseType'])
         sqft = int(request.form['inputsq'])
-        distLondon = distanceToLondon(lat_form, long_form)
+        distCenter = distanceToLondon(lat_form, long_form)
         crime = getCrime(request.form['inputzip'])
         distHosp = distanceToHospital(lat_form, long_form)
         distSub = distanceToSubway(lat_form, long_form)
@@ -157,7 +157,7 @@ def london():
         
 
         data={'HouseType': houseType,'Areainsqft':sqft,'No.ofBedrooms': bed,'No.ofBathrooms': bath,'No.ofReceptions':recep,
-                    'distance_to_london':distLondon,'NCrime':crime, 'DisToHospital':distHosp, 'DisToSubway':distSub, 'DisToShool':distSchool, 'PostalCode':zip}
+                    'distance_to_london':distCenter,'NCrime':crime, 'DisToHospital':distHosp, 'DisToSubway':distSub, 'DisToShool':distSchool, 'PostalCode':zip}
         
         print(data)
         # Create DataFrame
@@ -165,9 +165,9 @@ def london():
         pred_price_form = model.predict(df).round(1)
         price = pred_price_form[0]
         
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Pred. price: {price}$ </i>"
-        iframe = folium.IFrame(str, width=200, height=120)
-        pop = folium.Popup(iframe, max_width=200)
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Pred. price: {price}£</i>"
+        iframe = folium.IFrame(str, width=260, height=120)
+        pop = folium.Popup(iframe, max_width=300)
         folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
 
@@ -198,13 +198,11 @@ def london():
             break
     
     data = pd.read_csv('LondonFinalLable.csv')
-    
     tooltip = "Click for house stats"
-    
     pos = []
     count = 0
     while(True):
-        i = randint(0, 3400)
+        i = randint(0, 3200)
         if i in pos:
             continue
         pos.append(i)
@@ -215,7 +213,7 @@ def london():
         bed = data.NoofBedrooms[i]
         bath = data.NoofBathrooms[i]
         sqft = data.Areainsqft[i]
-        disCenter = data.distance_to_london[i].round(1)
+        distCenter = data.distance_to_london[i]
         real_price = data.Price[i].round(1)
 
         x= data.iloc[[i]]
@@ -224,7 +222,7 @@ def london():
 
 
         pred_price = model.predict(x).round(1)
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {disCenter}km<br>Price: {real_price}$<br>Pred. price: {pred_price[0]}$ </i>"
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Price: {real_price}£<br>Pred. price: {pred_price[0]}£</i>"
 
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
@@ -235,7 +233,10 @@ def london():
 
     map.save("templates/map.html")
     title = "London Housing"
-    return render_template("housing.html", pred_form = price, title= title)
+    postalcode = pd.read_csv('PostCodeLabel.csv')
+    post = postalcode['Postcode'].tolist()
+    
+    return render_template("housing.html", pred_form = price, title= title, postal = post)
 
 @app.route('/map')
 def map():

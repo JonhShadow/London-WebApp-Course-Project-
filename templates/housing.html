@@ -13,11 +13,15 @@ import %}
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
 
-{% endblock %} {% block bodyBlock %} {% if title == "London Housing" %}
-onload="getParams('gb', [-0.502625,51.302287,0.241699,51.666593,])" {% else %}
-onload="getParams('us',
-[-124.862197896945,45.5435400017256,-116.916070668425,49.0121490866648,])" {%
-endif %} {% endblock %} {% block body %}
+{% endblock %} 
+{% block bodyBlock %} 
+    {% if title == "London Housing" %}
+        onload="getParams('gb', [-0.510375,51.28676,0.334015,51.691874,], {{postal}})" 
+    {% else %}
+        onload="getParams('us',[-124.862197896945,45.5435400017256,-116.916070668425,49.0121490866648,], ['none'])" 
+    {% endif %}
+{% endblock %} 
+{% block body %}
 <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
 <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
 <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
@@ -67,6 +71,7 @@ endif %} {% endblock %} {% block body %}
                     <select class="form-select" aria-label="Default select example" name="inputHouseType"
                         id="inputHouseType" required>
                         <option value="">Select a house type</option>
+                        <option value="House">House</option>
                         <option value="Flat / Apartment">Flat / Apartment</option>
                         <option value="New development">New development</option>
                         <option value="Penthouse">Penthouse</option>
@@ -82,15 +87,13 @@ endif %} {% endblock %} {% block body %}
                 </div>
                 <div class="form-group col">
                     <label for="inputzip">ZipCode</label>
-                    <input type="text" class="form-control" name="inputzip" id="inputzip" readonly>
+                    <input type="text" class="form-control" name="inputzip" id="inputzip" onchange="checkPostalcode()" readonly>
                 </div>
             </div>
             <div class="row pt-2">
                 <div class="form-group col-md-4">
                     <label for="submit"></label>
-                    <button type="submit" class="sub btn btn-primary btn-block">
-                        Submit
-                    </button>
+                    <button title="Click for price predict" type="submit" id="submit" class="sub btn btn-primary btn-block">Submit</button>
                 </div>
                 {% if pred_form != -1 %}
                 <div class="form-group col">
@@ -98,6 +101,11 @@ endif %} {% endblock %} {% block body %}
                     <h4 name="predict">Your house as a predict price of {{ pred_form }}$</h4>
                 </div>
                 {% endif %}
+            </div>
+            <div class="row pt-2" id="notLondonDiv">
+                <div class="form-group col">
+                    <h5 name="notLondon">This house is not in Greater London</h5>
+                </div>
             </div>
         </form>
     </div>
