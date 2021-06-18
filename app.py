@@ -19,9 +19,9 @@ from util import *
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "supertopsecretprivatekey"
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config["CACHE_TYPE"] = "null"
+#app.config['SECRET_KEY'] = "supertopsecretprivatekey"
+#app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+#app.config["CACHE_TYPE"] = "null"
 
 # start here
 @app.route('/')
