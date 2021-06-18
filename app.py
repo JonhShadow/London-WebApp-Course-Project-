@@ -100,7 +100,7 @@ def seattle():
     folium.GeoJson(london, name="london", style_function= lambda x : style, tooltip=folium.features.GeoJsonTooltip(fields=['name',],sticky=False, labels=False, localize=True)).add_to(map)
     folium.LayerControl().add_to(map)
 
-    poi = pd.read_csv("dataset/POI_KingCounty.csv")
+    poi = pd.read_csv("/static/dataset/POI_KingCounty.csv")
     for index, row in poi.iterrows():
         cm = folium.CircleMarker(location=[row.Lat, row.Long], radius=5,tooltip=row.category, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
         map.add_child(cm)
@@ -235,7 +235,7 @@ def london():
 
     map.save("templates/map.html")
     title = "London Housing"
-    postalcode = pd.read_csv('static/dataset/PostCodeLabel.csv')
+    postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
     post = postalcode['Postcode'].tolist()
     
     return render_template("housing.html", pred_form = price, title= title, postal = post)
