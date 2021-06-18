@@ -61,6 +61,6 @@ def HouseTypeToLable(house):
 
 def PostalCodeToLable(code):
     print(code)
-    postalcode = pd.read_csv('static/dataset/PostCodeLabel.csv')
+    postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
     post = postalcode[postalcode['Postcode'] == code]
     return  post['Label'].iloc[0]
