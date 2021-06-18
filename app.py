@@ -29,7 +29,7 @@ def home():
 
 @app.route('/seattle', methods=["POST", "GET"])
 def seattle():
-    pkl_filename = "house_model.pkl"
+    pkl_filename = "model\seattle_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -75,7 +75,7 @@ def seattle():
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
 
 
-    data = pd.read_csv("kc_house_data.csv")
+    data = pd.read_csv("dataset\kc_house_data.csv")
     conv_dates = [1 if values == 2014 else 0 for values in data.date]
     data['date'] = conv_dates
 
@@ -99,7 +99,7 @@ def seattle():
     folium.GeoJson(london, name="london", style_function= lambda x : style, tooltip=folium.features.GeoJsonTooltip(fields=['name',],sticky=False, labels=False, localize=True)).add_to(map)
     folium.LayerControl().add_to(map)
 
-    poi = pd.read_csv("POI_KingCounty.csv")
+    poi = pd.read_csv("dataset\POI_KingCounty.csv")
     for index, row in poi.iterrows():
         cm = folium.CircleMarker(location=[row.Lat, row.Long], radius=5,tooltip=row.category, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
         map.add_child(cm)
@@ -134,7 +134,7 @@ def seattle():
     
 @app.route('/london', methods=["POST", "GET"])
 def london():
-    pkl_filename = "GbFinalLabel_model.pkl"
+    pkl_filename = "model\GbFinalLabel_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -182,7 +182,7 @@ def london():
     folium.LayerControl().add_to(map)
 
     #adding 100 random pois to the map
-    poi = pd.read_csv("POI_London.csv")
+    poi = pd.read_csv("dataset\POI_London.csv")
     i = 0
     pos_vector = []
     while(True):
@@ -197,7 +197,7 @@ def london():
         if i == 50:
             break
     
-    data = pd.read_csv('LondonFinalLable.csv')
+    data = pd.read_csv('dataset\LondonFinalLable.csv')
     tooltip = "Click for house stats"
     pos = []
     count = 0
@@ -233,7 +233,7 @@ def london():
 
     map.save("templates/map.html")
     title = "London Housing"
-    postalcode = pd.read_csv('PostCodeLabel.csv')
+    postalcode = pd.read_csv('dataset\PostCodeLabel.csv')
     post = postalcode['Postcode'].tolist()
     
     return render_template("housing.html", pred_form = price, title= title, postal = post)
