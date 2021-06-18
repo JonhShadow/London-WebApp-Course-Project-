@@ -12,7 +12,7 @@ def getCrime(code):
     c=code.split(' ')
     code = c[0]
     print(code)
-    london = pd.read_csv('dataset\LondonFinalLable.csv')
+    london = pd.read_csv('static\dataset\LondonFinalLable.csv')
       
     crime = london[london['PostalCode'].astype(str).str.contains(code)]
     if crime.empty:
@@ -21,7 +21,7 @@ def getCrime(code):
         return crime['NCrime'].iloc[0]
 
 def distanceToHospital(lat,long):
-    poi_hospital = pd.read_csv("dataset\POI_Hospital.csv")
+    poi_hospital = pd.read_csv("static\dataset\POI_Hospital.csv")
     house = (lat, long)
     disToHosp = []
     for index, row in poi_hospital.iterrows():
@@ -31,7 +31,7 @@ def distanceToHospital(lat,long):
     return min(disToHosp)
 
 def distanceToSubway(lat,long):
-    poi_subway = pd.read_csv("dataset\POI_Subway.csv")
+    poi_subway = pd.read_csv("static\dataset\POI_Subway.csv")
     house = (lat, long)
     disToSub = []
     for index, row in poi_subway.iterrows():
@@ -41,7 +41,7 @@ def distanceToSubway(lat,long):
     return min(disToSub)
 
 def distanceToSchool(lat,long):
-    poi_school = pd.read_csv("dataset\POI_School.csv")
+    poi_school = pd.read_csv("static\dataset\POI_School.csv")
     house = (lat, long)
     disToSchool = []
     for index, row in poi_school.iterrows():
@@ -51,7 +51,7 @@ def distanceToSchool(lat,long):
     return min(disToSchool)
 
 def HouseTypeToLable(house):
-    london = pd.read_csv('dataset\LondonFinalLable.csv')
+    london = pd.read_csv('static\dataset\LondonFinalLable.csv')
     london = london[['HouseType', 'HouseTypeLabel']]
     london = london.dropna()
     london = london.drop_duplicates()
@@ -61,6 +61,6 @@ def HouseTypeToLable(house):
 
 def PostalCodeToLable(code):
     print(code)
-    postalcode = pd.read_csv('dataset\PostCodeLabel.csv')
+    postalcode = pd.read_csv('static\dataset\PostCodeLabel.csv')
     post = postalcode[postalcode['Postcode'] == code]
     return  post['Label'].iloc[0]

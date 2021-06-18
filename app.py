@@ -30,7 +30,7 @@ def home():
 
 @app.route('/seattle', methods=["POST", "GET"])
 def seattle():
-    pkl_filename = "model\seattle_model.pkl"
+    pkl_filename = "static\model\seattle_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -76,7 +76,7 @@ def seattle():
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
 
 
-    data = pd.read_csv("dataset\kc_house_data.csv")
+    data = pd.read_csv("static\dataset\kc_house_data.csv")
     conv_dates = [1 if values == 2014 else 0 for values in data.date]
     data['date'] = conv_dates
 
@@ -135,7 +135,7 @@ def seattle():
     
 @app.route('/london', methods=["POST", "GET"])
 def london():
-    pkl_filename = "model\GbFinalLabel_model.pkl"
+    pkl_filename = "static\model\GbFinalLabel_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -153,7 +153,7 @@ def london():
     folium.LayerControl().add_to(map)
 
     #adding 100 random pois to the map
-    poi = pd.read_csv("dataset\POI_London.csv")
+    poi = pd.read_csv("static\dataset\POI_London.csv")
     i = 0
     pos_vector = []
     while(True):
@@ -168,7 +168,7 @@ def london():
         if i == 100:
             break
     
-    data = pd.read_csv('dataset\LondonFinalLable.csv')
+    data = pd.read_csv('static\dataset\LondonFinalLable.csv')
     tooltip = "Click for house stats"
     pos = []
     count = 0
@@ -235,7 +235,7 @@ def london():
 
     map.save("templates/map.html")
     title = "London Housing"
-    postalcode = pd.read_csv('dataset\PostCodeLabel.csv')
+    postalcode = pd.read_csv('static\dataset\PostCodeLabel.csv')
     post = postalcode['Postcode'].tolist()
     
     return render_template("housing.html", pred_form = price, title= title, postal = post)
