@@ -1,6 +1,6 @@
 # web app
 import os
-from flask import Flask, flash, redirect, url_for, render_template, request
+from flask import Flask, flash, redirect, url_for, render_template, request, abort
 import folium
 import json
 import requests
@@ -16,11 +16,12 @@ from sklearn.ensemble import GradientBoostingRegressor
 # utils
 from util import *
 
+from werkzeug.exceptions import HTTPException
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config["CACHE_TYPE"] = "null"
-app.config.update( DEBUG=True, TEMPLATES_AUTO_RELOAD=True)
 
 # start here
 @app.route('/')
@@ -140,37 +141,7 @@ def london():
 
     map = folium.Map(location=[51.509865, -0.118092], tiles="OpenStreetMap", zoom_start=10.5)
     price = -1
-    if request.method == "POST":
-        lat_form = request.form['lat']
-        long_form = request.form['long']
-        zip = PostalCodeToLable(request.form['inputzip'])
-        bed = int(request.form['inputbed'])
-        bath = int(request.form['inputbath'])
-        recep = int(request.form['inputRecep'])
-        houseType = HouseTypeToLable(request.form['inputHouseType'])
-        sqft = int(request.form['inputsq'])
-        distCenter = distanceToLondon(lat_form, long_form)
-        crime = getCrime(request.form['inputzip'])
-        distHosp = distanceToHospital(lat_form, long_form)
-        distSub = distanceToSubway(lat_form, long_form)
-        distSchool = distanceToSchool(lat_form, long_form)
-        
-
-        data={'HouseType': houseType,'Areainsqft':sqft,'No.ofBedrooms': bed,'No.ofBathrooms': bath,'No.ofReceptions':recep,
-                    'distance_to_london':distCenter,'NCrime':crime, 'DisToHospital':distHosp, 'DisToSubway':distSub, 'DisToShool':distSchool, 'PostalCode':zip}
-        
-        print(data)
-        # Create DataFrame
-        df = pd.DataFrame(data, index=[0])
-        pred_price_form = model.predict(df).round(1)
-        price = pred_price_form[0]
-        
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Pred. price: {price}£</i>"
-        iframe = folium.IFrame(str, width=260, height=120)
-        pop = folium.Popup(iframe, max_width=300)
-        folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
-                      icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
-
+    
     style = {
         "fillOpacity": 0.1,
     }
@@ -191,10 +162,10 @@ def london():
             continue
         pos_vector.append(index)
         row = poi.iloc[index]
-        cm = folium.CircleMarker(location=[row.lat, row.long], radius=5,tooltip=row.name, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
+        cm = folium.CircleMarker(location=[row.lat, row.long], radius=5,tooltip=row.venue, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
         map.add_child(cm)
         i += 1
-        if i == 50:
+        if i == 100:
             break
     
     data = pd.read_csv('dataset\LondonFinalLable.csv')
@@ -228,8 +199,39 @@ def london():
         pop = folium.Popup(iframe, max_width=300)
         folium.Marker([lat, long], popup=pop, tooltip=tooltip, icon=folium.Icon(color='cadetblue', icon='home', prefix='fa')).add_to(map)
         count += 1
-        if count == 100:
+        if count == 60:
             break
+    
+    if request.method == "POST":
+        lat_form = request.form['lat']
+        long_form = request.form['long']
+        zip = PostalCodeToLable(request.form['inputzip'])
+        bed = int(request.form['inputbed'])
+        bath = int(request.form['inputbath'])
+        recep = int(request.form['inputRecep'])
+        houseType = HouseTypeToLable(request.form['inputHouseType'])
+        sqft = int(request.form['inputsq'])
+        distCenter = distanceToLondon(lat_form, long_form)
+        crime = getCrime(request.form['inputzip'])
+        distHosp = distanceToHospital(lat_form, long_form)
+        distSub = distanceToSubway(lat_form, long_form)
+        distSchool = distanceToSchool(lat_form, long_form)
+        
+
+        data={'HouseType': houseType,'Areainsqft':sqft,'No.ofBedrooms': bed,'No.ofBathrooms': bath,'No.ofReceptions':recep,
+                    'distance_to_london':distCenter,'NCrime':crime, 'DisToHospital':distHosp, 'DisToSubway':distSub, 'DisToShool':distSchool, 'PostalCode':zip}
+        
+        # Create DataFrame
+        df = pd.DataFrame(data, index=[0])
+        pred_price_form = model.predict(df).round(1)
+        price = pred_price_form[0]
+        
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Pred. price: {price}£</i>"
+        iframe = folium.IFrame(str, width=260, height=120)
+        pop = folium.Popup(iframe, max_width=300)
+        folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
+                      icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
+
 
     map.save("templates/map.html")
     title = "London Housing"
@@ -242,6 +244,17 @@ def london():
 def map():
     return render_template('map.html')
 
+@app.errorhandler(404)
+def error404(e):
+    return render_template("error.html"), 404
+
+@app.errorhandler(403)
+def error500(e):
+    return render_template("erro.html"), 403
+
+@app.errorhandler(500)
+def error500(e):
+    return render_template("error.html"), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

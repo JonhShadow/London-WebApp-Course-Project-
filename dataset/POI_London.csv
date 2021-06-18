@@ -1,4 +1,4 @@
-Venue_ID,lat,long,name,country
+Venue_ID,lat,long,venue,country
 4a5f9446f964a520e0bf1fe3,51.49477,-0.182719,Burger Joint,GB
 4abcec53f964a520b98720e3,51.508207,-0.131414,Hotel,GB
 4abdc1c7f964a5206d8b20e3,51.52315,-0.105242,Pub,GB

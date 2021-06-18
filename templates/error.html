@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block body %}
+<div class="container text-center mt-5">
+    <h1>Something went wrong</h1>
+    <h4>What you were looking for is just not there.</h4>
+    <h5><a href="{{ url_for('london') }}">predict your house price here</a></h5>
+</div>
+{% endblock %}
