@@ -135,7 +135,7 @@ def seattle():
     
 @app.route('/london', methods=["POST", "GET"])
 def london():
-    pkl_filename = "static\model\GbFinalLabel_model.pkl"
+    pkl_filename = "static/model/GbFinalLabel_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
