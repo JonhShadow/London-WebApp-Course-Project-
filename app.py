@@ -30,7 +30,7 @@ def home():
 
 @app.route('/seattle', methods=["POST", "GET"])
 def seattle():
-    pkl_filename = "static/model/seattle_model.pkl"
+    pkl_filename = 'static/model/seattle_model.pkl'
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -76,7 +76,7 @@ def seattle():
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
 
 
-    data = pd.read_csv("static/dataset/kc_house_data.csv")
+    data = pd.read_csv('static/dataset/kc_house_data.csv')
     conv_dates = [1 if values == 2014 else 0 for values in data.date]
     data['date'] = conv_dates
 
@@ -100,7 +100,7 @@ def seattle():
     folium.GeoJson(london, name="london", style_function= lambda x : style, tooltip=folium.features.GeoJsonTooltip(fields=['name',],sticky=False, labels=False, localize=True)).add_to(map)
     folium.LayerControl().add_to(map)
 
-    poi = pd.read_csv("/static/dataset/POI_KingCounty.csv")
+    poi = pd.read_csv('static/dataset/POI_KingCounty.csv')
     for index, row in poi.iterrows():
         cm = folium.CircleMarker(location=[row.Lat, row.Long], radius=5,tooltip=row.category, fill=True, fill_color='lightblue', color='grey', fill_opacity=0.7)
         map.add_child(cm)
