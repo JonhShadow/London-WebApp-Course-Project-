@@ -20,9 +20,7 @@ import tempfile
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
 
-UPLOAD_FOLDER = "/tmp"
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -239,8 +237,8 @@ def london():
     temp = tempfile.NamedTemporaryFile()
     print(temp.name)
     htmlMap = temp.name + ".html"
-    map.save(os.path.join(app.config['UPLOAD_FOLDER']), htmlMap)
-    #print(htmlMap)
+    map.save(htmlMap)
+    print(htmlMap)
     
     title = "London Housing"
     postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
@@ -251,8 +249,7 @@ def london():
 @app.route('/map<file>')
 def map(file):
     print(file)
-    print('ola')
-    return send_from_directory(UPLOAD_FOLDER, file)
+    return send_file(file)
 
 @app.errorhandler(404)
 def error404(e):
