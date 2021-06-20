@@ -239,23 +239,17 @@ def london():
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
 
 
-    #map.save("templates/map.html")
-    temp = tempfile.TemporaryDirectory(dir="/tempMap")
-    print(temp.name)
-    htmlMap = temp.name + ".html"
-    map.save(htmlMap)
-    print(path.exists(htmlMap))
+    map.save("templates/map.html")
     
     title = "London Housing"
     postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
     post = postalcode['Postcode'].tolist()
     
-    return render_template("housing.html", pred_form = price, title= title, postal = post, map = htmlMap)
+    return render_template("housing.html", pred_form = price, title= title, postal = post)
 
-@app.route('/<file>')
-def map(file):
-    print(file)
-    return send_file(file)
+@app.route('/map')
+def map():
+    return render_template('map.html')
 
 @app.errorhandler(404)
 def error404(e):
