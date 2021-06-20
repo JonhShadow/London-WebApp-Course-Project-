@@ -23,7 +23,10 @@ from werkzeug.exceptions import HTTPException
 import os.path
 from os import path
 
+UPLOAD_FOLDER = '/tempMap'
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
