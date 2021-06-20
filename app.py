@@ -233,6 +233,7 @@ def london():
 
     #map.save("templates/map.html")
     temp = tempfile.NamedTemporaryFile()
+    print(tempfile.gettempdir())
     htmlMap = temp.name + ".html"
     map.save(htmlMap)
     #print(htmlMap)
