@@ -1,6 +1,6 @@
 # web app
 import os
-from flask import Flask, flash, redirect, url_for, render_template, request, abort, send_file
+from flask import Flask, flash, redirect, url_for, render_template, request, abort, send_file, send_from_directory
 import folium
 import json
 import requests
@@ -20,7 +20,10 @@ import tempfile
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
 
+UPLOAD_FOLDER = "/tmp"
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 #app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 #app.config["CACHE_TYPE"] = "null"
@@ -234,9 +237,9 @@ def london():
 
     #map.save("templates/map.html")
     temp = tempfile.NamedTemporaryFile()
-    print(tempfile.gettempdir())
+    print(temp.name)
     htmlMap = temp.name + ".html"
-    map.save(htmlMap)
+    map.save(os.path.join(app.config['UPLOAD_FOLDER']), htmlMap)
     #print(htmlMap)
     
     title = "London Housing"
@@ -249,7 +252,7 @@ def london():
 def map(file):
     print(file)
     print('ola')
-    return send_file(file)
+    return send_from_directory(UPLOAD_FOLDER, file)
 
 @app.errorhandler(404)
 def error404(e):
