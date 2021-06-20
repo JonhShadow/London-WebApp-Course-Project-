@@ -17,6 +17,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from util import *
 import tempfile
 
+from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
@@ -246,6 +247,7 @@ def london():
 
 @app.route('/map<file>')
 def map(file):
+    print(file)
     return send_file(file)
 
 @app.errorhandler(404)
