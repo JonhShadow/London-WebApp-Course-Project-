@@ -243,7 +243,7 @@ def london():
     
     return render_template("housing.html", pred_form = price, title= title, postal = post, map = htmlMap)
 
-@app.route('/map/<file>')
+@app.route('/map<file>')
 def map(file):
     return send_file(file)
 
