@@ -1,6 +1,6 @@
 # web app
 import os
-from flask import Flask, flash, redirect, url_for, render_template, request, abort
+from flask import Flask, flash, redirect, url_for, render_template, request, abort, send_file
 import folium
 import json
 import requests
@@ -15,6 +15,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 
 # utils
 from util import *
+import tempfile
 
 from werkzeug.exceptions import HTTPException
 
@@ -230,16 +231,21 @@ def london():
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
 
 
-    map.save("templates/map.html")
+    #map.save("templates/map.html")
+    temp = tempfile.NamedTemporaryFile()
+    htmlMap = temp.name + ".html"
+    map.save(htmlMap)
+    #print(htmlMap)
+    
     title = "London Housing"
     postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
     post = postalcode['Postcode'].tolist()
     
-    return render_template("housing.html", pred_form = price, title= title, postal = post)
+    return render_template("housing.html", pred_form = price, title= title, postal = post, map = htmlMap)
 
-@app.route('/map')
-def map():
-    return render_template('map.html')
+@app.route('/map/<file>')
+def map(file):
+    return send_file(file)
 
 @app.errorhandler(404)
 def error404(e):
