@@ -20,6 +20,9 @@ import tempfile
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
 
+import os.path
+from os import path
+
 app = Flask(__name__)
 
 #app.config['SECRET_KEY'] = "supertopsecretprivatekey"
@@ -238,7 +241,7 @@ def london():
     print(temp.name)
     htmlMap = temp.name + ".html"
     map.save(htmlMap)
-    print(htmlMap)
+    print(path.exists(htmlMap))
     
     title = "London Housing"
     postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
