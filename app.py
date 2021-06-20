@@ -69,7 +69,7 @@ def seattle():
         df = pd.DataFrame(data)
         pred_price_form = model.predict(df).round(1)
         price = pred_price_form[0]
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Sqft: {sqft_lot}sq<br>N floors: {floor}<br>N beds: {bed}<br>N bath: {bath}<br>Pred. price: {pred_price_form[0]}$ </i>"
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Sqft: {sqft_lot}sqft<br>N floors: {floor}<br>N beds: {bed}<br>N bath: {bath}<br>Pred. price: {pred_price_form[0]}$ </i>"
         iframe = folium.IFrame(str, width=200, height=120)
         pop = folium.Popup(iframe, max_width=200)
         folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
@@ -120,7 +120,7 @@ def seattle():
 
         pred_price = model.predict(x).round(1)
 
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Sqft: {sqft}sq<br>N floors: {floors}<br>N beds: {bed}<br>N bath: {bath}<br>Price: {real_price}$<br>Pred. price: {pred_price[0]}$ </i>"
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Sqft: {sqft}sqft<br>N floors: {floors}<br>N beds: {bed}<br>N bath: {bath}<br>Price: {real_price}$<br>Pred. price: {pred_price[0]}$ </i>"
 
         iframe = folium.IFrame(str, width=200, height=120)
         pop = folium.Popup(iframe, max_width=200)
@@ -190,7 +190,7 @@ def london():
 
 
         pred_price = model.predict(x).round(1)
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Price: {real_price}£<br>Pred. price: {pred_price[0]}£</i>"
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Price: {real_price}£<br>Pred. price: {pred_price[0]}£</i>"
 
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
@@ -223,7 +223,7 @@ def london():
         pred_price_form = model.predict(df).round(1)
         price = pred_price_form[0]
         
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sq<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Pred. price: {price}£</i>"
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Pred. price: {price}£</i>"
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
         folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
