@@ -248,6 +248,7 @@ def london():
 @app.route('/map<file>')
 def map(file):
     print(file)
+    print('ola')
     return send_file(file)
 
 @app.errorhandler(404)
