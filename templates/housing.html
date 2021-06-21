@@ -54,15 +54,15 @@ import %}
             <div class="row pt-2">
                 <div class="form-group col">
                     <label for="inputbed">Bedrooms</label>
-                    <input type="number" class="form-control" name="inputbed" id="inputbed" required/>
+                    <input type="number" class="form-control" name="inputbed" id="inputbed" min="0" pattern="\d+" required/>
                 </div>
                 <div class="form-group col">
                     <label for="inputbath">Bathrooms</label>
-                    <input type="number" class="form-control" name="inputbath" id="inputbath" required/>
+                    <input type="number" class="form-control" name="inputbath" id="inputbath" min="0" pattern="\d+" required/>
                 </div>
                 <div class="form-group col">
                     <label for="inputsq">Sqft</label>
-                    <input type="number" class="form-control" name="inputsq" id="inputsq" required/>
+                    <input type="number" class="form-control" name="inputsq" id="inputsq" min="0" pattern="\d+" required/>
                 </div>
             </div>
             <div class="row pt-2">
@@ -83,7 +83,7 @@ import %}
                 </div>
                 <div class="form-group col">
                     <label for="inputRecep">Receptions</label>
-                    <input type="number" class="form-control" name="inputRecep" id="inputRecep" required/>
+                    <input type="number" class="form-control" name="inputRecep" id="inputRecep" min="0" pattern="\d+" required/>
                 </div>
                 <div class="form-group col">
                     <label for="inputzip">ZipCode</label>
