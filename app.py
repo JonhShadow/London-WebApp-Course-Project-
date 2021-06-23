@@ -195,6 +195,9 @@ def london():
         sqft = data.Areainsqft[i]
         distCenter = data.distance_to_london[i]
         real_price = data.Price[i].round(1)
+        distHosp = data.DisToHospital[i]
+        distSub = data.DisToSubway[i]
+        distSchool = data.DisToShool[i]
 
         x= data.iloc[[i]]
         x = x[['HouseTypeLabel','Areainsqft','NoofBedrooms','NoofBathrooms','NoofReceptions',
@@ -202,7 +205,7 @@ def london():
 
 
         pred_price = model.predict(x).round(1)
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Price: {real_price}£<br>Pred. price: {pred_price[0]}£</i>"
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {real_price}£<br>Pred. price: {pred_price[0]}£</i>"
 
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
@@ -218,7 +221,8 @@ def london():
         bed = int(request.form['inputbed'])
         bath = int(request.form['inputbath'])
         recep = int(request.form['inputRecep'])
-        houseType = HouseTypeToLable(request.form['inputHouseType'])
+        houseType = request.form['inputHouseType']
+        houseTypeLabel = HouseTypeToLabel(request.form['inputHouseType'])
         sqft = int(request.form['inputsq'])
         distCenter = distanceToLondon(lat_form, long_form)
         crime = getCrime(request.form['inputzip'])
@@ -227,7 +231,7 @@ def london():
         distSchool = distanceToSchool(lat_form, long_form)
         
 
-        data={'HouseType': houseType,'Areainsqft':sqft,'No.ofBedrooms': bed,'No.ofBathrooms': bath,'No.ofReceptions':recep,
+        data={'HouseType': houseTypeLabel,'Areainsqft':sqft,'No.ofBedrooms': bed,'No.ofBathrooms': bath,'No.ofReceptions':recep,
                     'distance_to_london':distCenter,'NCrime':crime, 'DisToHospital':distHosp, 'DisToSubway':distSub, 'DisToShool':distSchool, 'PostalCode':zip}
         
         # Create DataFrame
@@ -235,7 +239,7 @@ def london():
         pred_price_form = model.predict(df).round(1)
         price = pred_price_form[0]
         
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Pred. price: {price}£</i>"
+        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}£</i>"
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
         folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",

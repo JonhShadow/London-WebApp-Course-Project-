@@ -50,7 +50,7 @@ def distanceToSchool(lat,long):
     
     return min(disToSchool)
 
-def HouseTypeToLable(house):
+def HouseTypeToLabel(house):
     london = pd.read_csv('static/dataset/LondonFinalLable.csv')
     london = london[['HouseType', 'HouseTypeLabel']]
     london = london.dropna()
