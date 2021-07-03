@@ -23,6 +23,7 @@ from werkzeug.exceptions import HTTPException
 import os.path
 from os import path
 import socket
+import datetime
 
 UPLOAD_FOLDER = '/tempMap'
 
@@ -46,11 +47,11 @@ def get_ip():
 # start here
 @app.route('/')
 def home():
-    session["user_name"] = get_ip()['ip']
     return redirect(url_for('london'))
 
 @app.route('/seattle', methods=["POST", "GET"])
 def seattle():
+    session["user_name"] = get_ip()['ip']
     pkl_filename = 'static/model/seattle_model.pkl'
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
@@ -150,9 +151,32 @@ def seattle():
     map.save("templates/map.html")
     title = "Seatle Housing"
     return render_template("housing.html", pred_form = price, title= title)
-    
+
+@app.route('/user')
+def get_session():
+    return session['user']
+
+@app.route('/currency', methods=["POST"])
+def currency():
+    if request.method == 'POST':
+        print("Aqui!!")
+        print(request.form['choice'])
+        session['user']['currency'] = request.form['choice']
+        session.modified = True
+        return redirect(url_for('london'))
+               
 @app.route('/london', methods=["POST", "GET"])
 def london():
+    if not 'user' in session:
+        session['user'] = {
+            'id' : get_ip()['ip'],
+            'map' : None,
+            'currency' : "GBP",
+            'lastVisit' : datetime.datetime.now()
+         }
+    session['user']['lastVisit'] = datetime.datetime.now()
+    session.modified = True
+        
     pkl_filename = "static/model/GbFinalLabel_model.pkl"
     with open(pkl_filename, 'rb') as file:
         model = pickle.load(file)
@@ -261,27 +285,27 @@ def london():
     postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
     post = postalcode['Postcode'].tolist()
     
-    return render_template("housing.html", pred_form = price, title= title, postal = post)
+    return render_template("housing.html", pred_form = price, title= title, postal = post, currency= session['user']['currency'])
 
 @app.route('/map')
 def map():
     return render_template('map.html')
-
-@app.route('/user')
-def get_session():
-    return session["user_name"]
 
 @app.errorhandler(404)
 def error404(e):
     return render_template("error.html"), 404
 
 @app.errorhandler(403)
-def error500(e):
+def error403(e):
     return render_template("erro.html"), 403
 
 @app.errorhandler(500)
 def error500(e):
     return render_template("error.html"), 500
+
+@app.errorhandler(405)
+def error405(e):
+    return render_template("error.html"), 405
 
 if __name__ == '__main__':
     app.run()

@@ -27,6 +27,24 @@
       <div class="navbar-nav">
         <a class="try-me navbar-brand fw-bold" href="/seattle"><i class="flag flag-united-states"></i>Seattle Housing Prices</a>
         <a class="try-me navbar-brand fw-bold" href="/london"><i class="flag flag-united-kingdom"></i>London Housing Prices</a>
+        <li class="nav-item dropdown">
+          <a class="navbar-brand dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if currency == "USD" %}
+              USD $
+            {% elif currency == "GBP" %}
+              GBP £
+            {% else %}
+              Currency
+            {% endif %}
+          </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <form action="\currency" method="POST">
+                <li><button class="dropdown-item" type="submit" id='USD' onmousedown="changeCurrency('USD')">USD (US Dollar)</button></li>
+                <li><button class="dropdown-item" type="submit" id='GBP' onmousedown="changeCurrency('GBP')">GBP (United Kingdom Pound)</button></li>
+                <input type="hidden" id="choice" name="choice" readonly>
+              </form>
+            </ul>
+        </li>
       </div>
     </div>
   </div>
@@ -39,6 +57,7 @@
         <a class="text-dark ms-3" href="https://github.com/JonhShadow/MNIST-Digits-ML-Web-App" target="_blank">GitHub</a>
       </div>
     </footer>
+    <script type="text/javascript" src="static/js/mapbox.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     </body>
 </html>

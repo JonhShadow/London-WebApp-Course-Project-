@@ -13,6 +13,12 @@ function getParams(html_country, html_box, list)
     zipList = list;
 }
 
+function changeCurrency(option)
+{
+  document.getElementById('choice').value = option;
+  console.log(option);
+}
+
 function checkPostalcode(mapboxZip)
 {
     var btn = document.getElementById('submit');
