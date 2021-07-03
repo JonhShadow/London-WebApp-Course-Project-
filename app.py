@@ -1,6 +1,6 @@
 # web app
 import os
-from flask import Flask, flash, redirect, url_for, render_template, request, abort, send_file, send_from_directory, session
+from flask import Flask, flash, redirect, url_for, render_template, request, abort, send_file, send_from_directory, session, jsonify
 import folium
 import json
 import requests
@@ -37,10 +37,16 @@ app.config['SECRET_KEY'] = "y\xa4\xbf\xb4\xb8\x91\xe8\x9cY\xe7\x80w\xc5\x95\x81\
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 #app.config["CACHE_TYPE"] = "null"
 
+def get_ip():
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        return {'ip': request.environ['REMOTE_ADDR']}
+    else:
+        return {'ip': request.environ['HTTP_X_FORWARDED_FOR']}
+
 # start here
 @app.route('/')
 def home():
-    session["user_name"] = request.remote_addr
+    session["user_name"] = get_ip()['ip']
     return redirect(url_for('london'))
 
 @app.route('/seattle', methods=["POST", "GET"])
