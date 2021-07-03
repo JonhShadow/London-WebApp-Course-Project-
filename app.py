@@ -40,9 +40,7 @@ app.config['SECRET_KEY'] = "y\xa4\xbf\xb4\xb8\x91\xe8\x9cY\xe7\x80w\xc5\x95\x81\
 # start here
 @app.route('/')
 def home():
-    hostname = socket.gethostname()
-    ip = socket.gethostbyname(hostname)
-    session["user_name"] = ip
+    session["user_name"] = request.remote_addr
     return redirect(url_for('london'))
 
 @app.route('/seattle', methods=["POST", "GET"])
