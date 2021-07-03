@@ -1,6 +1,6 @@
 # web app
 import os
-from flask import Flask, flash, redirect, url_for, render_template, request, abort, send_file, send_from_directory
+from flask import Flask, flash, redirect, url_for, render_template, request, abort, send_file, send_from_directory, session
 import folium
 import json
 import requests
@@ -22,15 +22,17 @@ from werkzeug.exceptions import HTTPException
 
 import os.path
 from os import path
+import socket
 
 UPLOAD_FOLDER = '/tempMap'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SECRET_KEY'] = "supertopsecretprivatekey"
+#app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
+app.config['SECRET_KEY'] = "y\xa4\xbf\xb4\xb8\x91\xe8\x9cY\xe7\x80w\xc5\x95\x81\x92\xa8u>\xef\xc1\x01sx"
 #app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 #app.config["CACHE_TYPE"] = "null"
@@ -38,6 +40,9 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 # start here
 @app.route('/')
 def home():
+    hostname = socket.gethostname()
+    ip = socket.gethostbyname(hostname)
+    session["user_name"] = ip
     return redirect(url_for('london'))
 
 @app.route('/seattle', methods=["POST", "GET"])
@@ -257,6 +262,10 @@ def london():
 @app.route('/map')
 def map():
     return render_template('map.html')
+
+@app.route('/user')
+def get_session():
+    return session["user_name"]
 
 @app.errorhandler(404)
 def error404(e):
