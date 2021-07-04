@@ -44,6 +44,11 @@ def get_ip():
     else:
         return {'ip': request.environ['HTTP_X_FORWARDED_FOR']}
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(minutes=1)
+    
 # start here
 @app.route('/')
 def home():
@@ -177,11 +182,10 @@ def london():
             'id' : get_ip()['ip'],
             'recentPoints' : [],
             'currency' : "GBP",
-            'lastVisit' : datetime.datetime.now(),
+            'SessionCreation' : datetime.datetime.now(),
             'exchangeRate' : None
          }
-    session['user']['lastVisit'] = datetime.datetime.now()
-    session.modified = True
+        session.modified = True
         
     pkl_filename = "static/model/GbFinalLabel_model.pkl"
     with open(pkl_filename, 'rb') as file:
