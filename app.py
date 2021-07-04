@@ -175,7 +175,7 @@ def london():
     if not 'user' in session:
         session['user'] = {
             'id' : get_ip()['ip'],
-            'map' : None,
+            'recentPoints' : [],
             'currency' : "GBP",
             'lastVisit' : datetime.datetime.now(),
             'exchangeRate' : None
@@ -257,6 +257,13 @@ def london():
         count += 1
         if count == 60:
             break
+    print(len(session['user']['recentPoints']))
+    if session['user']['recentPoints']:
+        for house in session['user']['recentPoints']:
+            iframe = folium.IFrame(house['text'], width=260, height=120)
+            pop = folium.Popup(iframe, max_width=300)
+            folium.Marker(house['loc'], popup=pop, tooltip="Recent Search",
+                      icon=folium.Icon(color='purple', icon='home', prefix='fa')).add_to(map)
     
     if request.method == "POST":
         lat_form = request.form['lat']
@@ -284,16 +291,23 @@ def london():
             pred_price_form = model.predict(df).round(1) * session['user']['exchangeRate']
             price = round(pred_price_form[0] * session['user']['exchangeRate'],1)
             str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}$</i>"
+            housePred = {'text' : str, 'loc' : [lat_form, long_form]}
+            session['user']['recentPoints'].append(housePred)
+            session.modified = True
         else:
             pred_price_form = model.predict(df).round(1)
             price = pred_price_form[0]
             str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}£</i>"
-        
+            housePred = {'text' : str, 'loc' : [lat_form, long_form]}
+            session['user']['recentPoints'].append(housePred)
+            session.modified = True
+            
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
         folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
-
+    
+        
 
     map.save("templates/map.html")
     
