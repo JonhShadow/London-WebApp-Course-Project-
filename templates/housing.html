@@ -98,7 +98,11 @@ import %}
                 {% if pred_form != -1 %}
                 <div class="form-group col">
                     <label for="predict"></label>
-                    <h4 name="predict">Your house has a predict price of {{ pred_form }}$</h4>
+                    {% if currency == "USD" %}
+                        <h4 name="predict">Your house has a predict price of {{ pred_form }}$</h4>
+                    {% else %}
+                        <h4 name="predict">Your house has a predict price of {{ pred_form }}£</h4>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>

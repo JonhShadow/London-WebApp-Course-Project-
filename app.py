@@ -152,17 +152,22 @@ def seattle():
     title = "Seatle Housing"
     return render_template("housing.html", pred_form = price, title= title)
 
-@app.route('/user')
+@app.route('/user', methods=["GET"])
 def get_session():
     return session['user']
 
 @app.route('/currency', methods=["POST"])
 def currency():
     if request.method == 'POST':
-        print("Aqui!!")
-        print(request.form['choice'])
         session['user']['currency'] = request.form['choice']
+        
+        apiId = "941abffae69147b7a48685c39f13410d"
+        response = requests.get('https://openexchangerates.org/api/latest.json?app_id='+apiId+'&symbols=GBP')
+        rate = response.json()['rates']['GBP']
+        session['user']['exchangeRate'] = 1/rate
+        
         session.modified = True
+        print(session['user'])
         return redirect(url_for('london'))
                
 @app.route('/london', methods=["POST", "GET"])
@@ -172,7 +177,8 @@ def london():
             'id' : get_ip()['ip'],
             'map' : None,
             'currency' : "GBP",
-            'lastVisit' : datetime.datetime.now()
+            'lastVisit' : datetime.datetime.now(),
+            'exchangeRate' : None
          }
     session['user']['lastVisit'] = datetime.datetime.now()
     session.modified = True
@@ -236,9 +242,14 @@ def london():
         x = x[['HouseTypeLabel','Areainsqft','NoofBedrooms','NoofBathrooms','NoofReceptions',
                     'distance_to_london','NCrime', 'DisToHospital', 'DisToSubway', 'DisToShool', 'PostalCodeLabel']]
 
-
-        pred_price = model.predict(x).round(1)
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {real_price}£<br>Pred. price: {pred_price[0]}£</i>"
+        if session['user']['currency'] == 'USD':
+            pred_price = model.predict(x).round(1) * session['user']['exchangeRate']
+            real_price = real_price * session['user']['exchangeRate']
+            
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {round(real_price,1)} $<br>Pred. price: {round(pred_price[0],1)}$</i>"
+        else:
+            pred_price = model.predict(x).round(1)
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {round(real_price,1)} £<br>Pred. price: {round(pred_price[0],1)}£</i>"
 
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
@@ -269,10 +280,15 @@ def london():
         
         # Create DataFrame
         df = pd.DataFrame(data, index=[0])
-        pred_price_form = model.predict(df).round(1)
-        price = pred_price_form[0]
+        if session['user']['currency'] == 'USD':
+            pred_price_form = model.predict(df).round(1) * session['user']['exchangeRate']
+            price = round(pred_price_form[0] * session['user']['exchangeRate'],1)
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}$</i>"
+        else:
+            pred_price_form = model.predict(df).round(1)
+            price = pred_price_form[0]
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}£</i>"
         
-        str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}£</i>"
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
         folium.Marker([lat_form, long_form], popup=pop, tooltip="Your house",
