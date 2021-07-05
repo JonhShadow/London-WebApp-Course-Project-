@@ -29,6 +29,9 @@ import %}
 <div class="principal">
     <div class="principal-esquerda">
         <iframe class="frame-map" id="frame-map" src="/map" width="100%" height="100%"></iframe>
+        <form action="\deletePoints" method="POST">
+            <p>Delete past predictions <a id='deleteLink' onclick="this.closest('form').submit();return false;">here</a>.</p>
+        </form>
     </div>
     <div class="principal-direita">
         <h1>Predict the price of your house!</h1>
@@ -82,7 +85,7 @@ import %}
                     </select>
                 </div>
                 <div class="form-group col">
-                    <label for="inputsq">Square Foot</label>
+                    <label for="inputsq">Square Foot (ft<sup>2</sup>)</label>
                     <input type="number" class="form-control" name="inputsq" id="inputsq" min="0" pattern="\d+" required/>
                 </div>
                 <div class="form-group col">

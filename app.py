@@ -34,7 +34,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 app.config['SECRET_KEY'] = "y\xa4\xbf\xb4\xb8\x91\xe8\x9cY\xe7\x80w\xc5\x95\x81\x92\xa8u>\xef\xc1\x01sx"
-app.config['PERMANENT_SESSION_LIFETIME'] =  datetime.timedelta(days=7)
+app.config['PERMANENT_SESSION_LIFETIME'] =  datetime.timedelta(days=5)
 #app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 #app.config["CACHE_TYPE"] = "null"
@@ -261,7 +261,7 @@ def london():
         count += 1
         if count == 60:
             break
-    print(len(session['user']['recentPoints']))
+
     if session['user']['recentPoints']:
         for house in session['user']['recentPoints']:
             iframe = folium.IFrame(house['text'], width=260, height=120)
@@ -320,6 +320,11 @@ def london():
     post = postalcode['Postcode'].tolist()
     
     return render_template("housing.html", pred_form = price, title= title, postal = post, currency= session['user']['currency'])
+
+@app.route('/deletePoints', methods = ['POST'])
+def deletePoints():
+    session['user']['recentPoints'] = []
+    return redirect(url_for('london'))
 
 @app.route('/map')
 def map():
