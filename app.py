@@ -269,16 +269,36 @@ def london():
             folium.Marker(house['loc'], popup=pop, tooltip="Recent Search",
                       icon=folium.Icon(color='purple', icon='home', prefix='fa')).add_to(map)
     
+    formData = []
     if request.method == "POST":
+        search = request.form['myInput']
+        formData.append(search) #0
+        
         lat_form = request.form['lat']
+        formData.append(lat_form) #1
+        
         long_form = request.form['long']
+        formData.append(long_form) #2
+        
         zip = PostalCodeToLable(request.form['inputzip'])
+        formData.append(zip) #3
+        
         bed = int(request.form['inputbed'])
+        formData.append(bed) #4
+        
         bath = int(request.form['inputbath'])
+        formData.append(bath) #5
+        
         recep = int(request.form['inputRecep'])
+        formData.append(recep) #6
+        
         houseType = request.form['inputHouseType']
         houseTypeLabel = HouseTypeToLabel(request.form['inputHouseType'])
+        formData.append(houseType) #7
+        
         sqft = int(request.form['inputsq'])
+        formData.append(sqft) #8
+        
         distCenter = distanceToLondon(lat_form, long_form)
         crime = getCrime(request.form['inputzip'])
         distHosp = distanceToHospital(lat_form, long_form)
@@ -319,7 +339,7 @@ def london():
     postalcode = pd.read_csv('static/dataset/PostcodeLabel.csv')
     post = postalcode['Postcode'].tolist()
     
-    return render_template("housing.html", pred_form = price, title= title, postal = post, currency= session['user']['currency'])
+    return render_template("housing.html", pred_form = price, title= title, postal = post, currency= session['user']['currency'], formData = formData)
 
 @app.route('/deletePoints', methods = ['POST'])
 def deletePoints():

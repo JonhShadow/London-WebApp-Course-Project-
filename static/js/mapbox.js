@@ -49,8 +49,6 @@ function checkPostalcode(mapboxZip)
         document.getElementById('notLondonDiv').style.display = "block";
 
     }
-
-
 }
 
 function autocompleteSuggestionMapBoxAPI(inputParams, callback) {
@@ -198,6 +196,7 @@ function autocompleteInputBox(inp) {
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
         //console.log(document.getElementById("myInput"))
+        //console.log(document.getElementById("myInput").value)
     });
 }
 
