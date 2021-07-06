@@ -217,6 +217,21 @@ document.getElementById("iconCircle").addEventListener("click", function(){
     document.getElementById("myInput").value = "";
     document.getElementById("iconSearch").hidden = false;
     document.getElementById("iconCircle").hidden = true;
+    document.getElementById("myInput").focus();
+});
+
+document.getElementById("iconSearch").addEventListener("click", function(){
+    document.getElementById("myInput").focus();
+});
+
+document.getElementById("myInput").addEventListener("focus", function(){
+    let p= document.getElementById('append').getElementsByTagName("span");
+    p[0].classList.add("searchFocus");
+})
+
+document.getElementById("myInput").addEventListener("blur", function(){
+    let p= document.getElementById('append').getElementsByTagName("span");
+    p[0].classList.remove("searchFocus");
 });
 
 autocompleteInputBox(document.getElementById("myInput"));
