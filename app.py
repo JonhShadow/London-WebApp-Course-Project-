@@ -281,7 +281,7 @@ def london():
         formData.append(long_form) #2
         
         zip = PostalCodeToLable(request.form['inputzip'])
-        formData.append(zip) #3
+        formData.append(request.form['inputzip']) #3
         
         bed = int(request.form['inputbed'])
         formData.append(bed) #4
@@ -316,15 +316,17 @@ def london():
             price = round(pred_price_form[0] * session['user']['exchangeRate'],1)
             str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}$</i>"
             housePred = {'text' : str, 'loc' : [lat_form, long_form]}
-            session['user']['recentPoints'].append(housePred)
-            session.modified = True
+            if not housePred in session['user']['recentPoints']:
+                session['user']['recentPoints'].append(housePred)
+                session.modified = True
         else:
             pred_price_form = model.predict(df).round(1)
             price = pred_price_form[0]
             str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Sqft: {sqft}sqft<br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}£</i>"
             housePred = {'text' : str, 'loc' : [lat_form, long_form]}
-            session['user']['recentPoints'].append(housePred)
-            session.modified = True
+            if not housePred in session['user']['recentPoints']:
+                session['user']['recentPoints'].append(housePred)
+                session.modified = True
             
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)

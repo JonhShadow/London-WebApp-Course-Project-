@@ -36,15 +36,20 @@ import %}
     <div class="principal-direita">
         <h1>Predict the price of your house!</h1>
         <form class="container pt-4" action="#" method="post" enctype="multipart/form-data" autocomplete="off">
-            <div class="form-group">
+            <div class="form-group mt-1">
                 <div class="autocomplete">
-                    {% if formData == [] %}
-                        <input type="text" id="myInput" type="text" name="myInput" class="form-control mt-1"
-                            placeholder="Ex. 40 Vauxhall Bridge Road, Westminster" required/>
-                    {% else %}
-                        <input type="text" id="myInput" type="text" name="myInput" class="form-control mt-1"
-                            value="{{formData[0]}}" required/>
-                    {% endif %}
+                    <div class="input-group">
+                        {% if formData == [] %}
+                            <input type="text" id="myInput" type="text" name="myInput" class="form-control myInput"
+                                placeholder="Ex. 40 Vauxhall Bridge Road, Westminster" required/>
+                        {% else %}
+                            <input type="text" id="myInput" type="text" name="myInput" class="form-control myInput"
+                                value="{{formData[0]}}" placeholder="Ex. 40 Vauxhall Bridge Road, Westminster" required/>
+                        {% endif %}
+                        <div id="append" class="input-group-append">
+                            <span class="input-group-text searchIcon"><i id="iconSearch" class="fas fa-search"></i><i hidden id="iconCircle" class="fas fa-times-circle"></i></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group get">
@@ -71,33 +76,33 @@ import %}
             </div>
             <div class="row pt-2">
                 <div class="form-group col">
-                    <label for="inputbed">Bedrooms</label>
+                    <label for="inputbed"><i class="fas fa-bed"></i> Bedrooms</label>
                     {% if formData == [] %}
-                        <input type="number" class="form-control" name="inputbed" id="inputbed" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 3" type="number" class="form-control" name="inputbed" id="inputbed" min="1" pattern="\d+" required/>
                     {% else %}
-                        <input value="{{formData[4]}}" type="number" class="form-control" name="inputbed" id="inputbed" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 3" value="{{formData[4]}}" type="number" class="form-control" name="inputbed" id="inputbed" min="1" pattern="\d+" required/>
                     {% endif %}
                 </div>
                 <div class="form-group col">
-                    <label for="inputbath">Bathrooms</label>
+                    <label for="inputbath"><i class="fas fa-bath"></i> Bathrooms</label>
                     {% if formData == [] %}
-                        <input type="number" class="form-control" name="inputbath" id="inputbath" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 2" type="number" class="form-control" name="inputbath" id="inputbath" min="1" pattern="\d+" required/>
                     {% else %}
-                        <input value="{{formData[5]}}" type="number" class="form-control" name="inputbath" id="inputbath" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 2" value="{{formData[5]}}" type="number" class="form-control" name="inputbath" id="inputbath" min="1" pattern="\d+" required/>
                     {%endif %}
                 </div>
                 <div class="form-group col">
-                    <label for="inputRecep">Receptions</label>
+                    <label for="inputRecep"><i class="fas fa-couch"></i> Receptions</label>
                     {% if formData == [] %}
-                        <input type="number" class="form-control" name="inputRecep" id="inputRecep" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 1" type="number" class="form-control" name="inputRecep" id="inputRecep" min="0" pattern="\d+" required/>
                     {% else %}
-                        <input value="{{formData[6]}}" type="number" class="form-control" name="inputRecep" id="inputRecep" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 1" value="{{formData[6]}}" type="number" class="form-control" name="inputRecep" id="inputRecep" min="0" pattern="\d+" required/>
                     {% endif %}
                 </div>
             </div>
             <div class="row pt-2">
                 <div class="form-group col">
-                    <label for="inputHouseType">House Type</label>
+                    <label for="inputHouseType"><i class="fas fa-house-user"></i> House Type</label>
                     <select class="form-select" aria-label="Default select example" name="inputHouseType" id="inputHouseType" required>
                         <option value="">Select a house type</option>
                         <option {% if formData[7] == "House" %} selected {% endif %} value="House">House</option>
@@ -111,19 +116,19 @@ import %}
                     </select>
                 </div>
                 <div class="form-group col">
-                    <label for="inputsq">Square Foot (ft<sup>2</sup>)</label>
+                    <label for="inputsq"><i class="fas fa-arrows-alt-h"></i> Square Foot (ft<sup>2</sup>)</label>
                     {% if formData == [] %}
-                        <input type="number" class="form-control" name="inputsq" id="inputsq" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 120" type="number" class="form-control" name="inputsq" id="inputsq" min="1" pattern="\d+" required/>
                     {% else %}
-                        <input value="{{formData[8]}}" type="number" class="form-control" name="inputsq" id="inputsq" min="0" pattern="\d+" required/>
+                        <input placeholder="Ex. 120" value="{{formData[8]}}" type="number" class="form-control" name="inputsq" id="inputsq" min="1" pattern="\d+" required/>
                     {% endif %}
                 </div>
                 <div class="form-group col">
-                    <label for="inputzip">ZipCode</label>
+                    <label for="inputzip"><i class="fas fa-map-signs"></i> ZipCode</label>
                     {% if formData == [] %}
                         <input type="text" class="form-control" name="inputzip" id="inputzip" onchange="checkPostalcode()" readonly>
                     {% else %}
-                        <input type="text" class="form-control" name="inputzip" id="inputzip" onchange="checkPostalcode()" value="formData[3]" readonly>
+                        <input type="text" class="form-control" name="inputzip" id="inputzip" onchange="checkPostalcode()" value="{{formData[3]}}" readonly>
                     {% endif %}
                 </div>
             </div>
