@@ -61,20 +61,42 @@ input[type=submit] {
     cursor: pointer;
 }
 
-.myInput{
+#myInput{
     border-right: none;
-    background-color: #f1f1f1;
+    background-color: #fff;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    clip-path: inset(-15px 0px -15px -15px);
 }
+
+#myInput:focus{
+    border-color: #80bdff;
+    border-right-color: #fff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
 .searchIcon
 {
     color:rgb(144,144,144);
     border-left: none;
-    background-color: #f1f1f1;
+    background-color: #fff;
     height: 100%;
     font-size: 16px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    clip-path: inset(-15px -15px -15px 0px);
+}
 
+.searchFocus{
+    border-color: #80bdff;
+    border-left-color: #fff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+#appendSpan, #iconSearch, #append{
+    cursor: text;
 }
 
 #iconCircle{
@@ -84,6 +106,7 @@ input[type=submit] {
 #iconCircle:hover{
     color: red;
 }
+
 .autocomplete-items {
     position: absolute;
     border: 1px solid #d4d4d4;
