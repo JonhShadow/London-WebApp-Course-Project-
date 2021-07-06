@@ -25,6 +25,8 @@ from os import path
 import socket
 import datetime
 
+from addLegend import legend
+
 UPLOAD_FOLDER = '/tempMap'
 
 app = Flask(__name__)
@@ -334,7 +336,7 @@ def london():
                       icon=folium.Icon(color='green', icon='home', prefix='fa')).add_to(map)
     
         
-
+    map.get_root().add_child(legend())
     map.save("templates/map.html")
     
     title = "London Housing"
