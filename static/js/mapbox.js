@@ -200,4 +200,23 @@ function autocompleteInputBox(inp) {
     });
 }
 
+
+document.addEventListener("input", function(){
+    if(document.getElementById("myInput").value.length >=1)
+    {
+        document.getElementById("iconSearch").hidden = true;
+        document.getElementById("iconCircle").hidden = false;
+    }
+    else{
+        document.getElementById("iconSearch").hidden = false;
+        document.getElementById("iconCircle").hidden = true;
+    }
+});
+
+document.getElementById("iconCircle").addEventListener("click", function(){
+    document.getElementById("myInput").value = "";
+    document.getElementById("iconSearch").hidden = false;
+    document.getElementById("iconCircle").hidden = true;
+});
+
 autocompleteInputBox(document.getElementById("myInput"));
