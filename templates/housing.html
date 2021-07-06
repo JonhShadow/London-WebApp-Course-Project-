@@ -42,13 +42,16 @@ import %}
                         {% if formData == [] %}
                             <input type="text" id="myInput" type="text" name="myInput" class="form-control myInput"
                                 placeholder="Ex. 40 Vauxhall Bridge Road, Westminster" required/>
+                            <div id="append" class="input-group-append">
+                                <span class="input-group-text searchIcon"><i id="iconSearch" class="fas fa-search"></i><i hidden id="iconCircle" class="fas fa-times-circle"></i></span>
+                            </div>
                         {% else %}
                             <input type="text" id="myInput" type="text" name="myInput" class="form-control myInput"
                                 value="{{formData[0]}}" placeholder="Ex. 40 Vauxhall Bridge Road, Westminster" required/>
+                            <div id="append" class="input-group-append">
+                                <span class="input-group-text searchIcon"><i hidden id="iconSearch" class="fas fa-search"></i><i id="iconCircle" class="fas fa-times-circle"></i></span>
+                            </div>
                         {% endif %}
-                        <div id="append" class="input-group-append">
-                            <span class="input-group-text searchIcon"><i id="iconSearch" class="fas fa-search"></i><i hidden id="iconCircle" class="fas fa-times-circle"></i></span>
-                        </div>
                     </div>
                 </div>
             </div>
