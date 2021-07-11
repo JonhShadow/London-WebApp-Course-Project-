@@ -43,7 +43,7 @@ def legend():
     <ul class='legend-labels'>
         <li><span style='background:#71AF26;opacity:1;'></span>Just added house prediction</li>
         <li><span style='background:#D051B7;opacity:1;'></span>Past house prediction</li>
-        <li><span style='background:#426877;opacity:1;'></span>House prediction exemple</li>
+        <li><span style='background:#426877;opacity:1;'></span>House prediction example</li>
         <li><span style='background:lightblue;opacity:1;'></span>Point of interest</li>
         
 
