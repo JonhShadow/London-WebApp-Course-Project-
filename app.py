@@ -252,10 +252,11 @@ def london():
             pred_price = model.predict(x).round(1) * session['user']['exchangeRate']
             real_price = real_price * session['user']['exchangeRate']
             
-            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {round(real_price,1)} $<br>Pred. price: {round(pred_price[0],1)}$</i>"
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {round(bed)}<br>N bath: {round(bath)}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {round(real_price,1)} $<br>Pred. price: {round(pred_price[0],1)} $</i>"
         else:
             pred_price = model.predict(x).round(1)
-            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {round(real_price,1)} £<br>Pred. price: {round(pred_price[0],1)}£</i>"
+            
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>Type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {round(bed)}<br>N bath: {round(bath)}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Price: {round(real_price,1)} £<br>Pred. price: {round(pred_price[0],1)} £</i>"
 
         iframe = folium.IFrame(str, width=260, height=120)
         pop = folium.Popup(iframe, max_width=300)
@@ -316,7 +317,7 @@ def london():
         if session['user']['currency'] == 'USD':
             pred_price_form = model.predict(df).round(1) * session['user']['exchangeRate']
             price = round(pred_price_form[0] * session['user']['exchangeRate'],1)
-            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}$</i>"
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {round(bed)}<br>N bath: {round(bath)}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price} $</i>"
             housePred = {'text' : str, 'loc' : [lat_form, long_form]}
             if not housePred in session['user']['recentPoints']:
                 session['user']['recentPoints'].append(housePred)
@@ -324,7 +325,7 @@ def london():
         else:
             pred_price_form = model.predict(df).round(1)
             price = pred_price_form[0]
-            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {bed}<br>N bath: {bath}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price}£</i>"
+            str = f"<i style='font-family: Helvetica, sans-serif; line-height: 1.6;'>House type: {houseType}<br>Area: {sqft} ft<sup>2</sup><br>N beds: {round(bed)}<br>N bath: {round(bath)}<br>Distance to downtown: {round(distCenter,1)}km<br>Distance to Hospital: {round(distHosp,1)}km<br>Distance to subway: {round(distSub,1)}km<br>Distance to school: {round(distSchool,1)}km<br>Pred. price: {price} £</i>"
             housePred = {'text' : str, 'loc' : [lat_form, long_form]}
             if not housePred in session['user']['recentPoints']:
                 session['user']['recentPoints'].append(housePred)
