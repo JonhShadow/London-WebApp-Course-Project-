@@ -36,7 +36,6 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 app.config['SECRET_KEY'] = "y\xa4\xbf\xb4\xb8\x91\xe8\x9cY\xe7\x80w\xc5\x95\x81\x92\xa8u>\xef\xc1\x01sx"
-app.config['PERMANENT_SESSION_LIFETIME'] =  datetime.timedelta(days=5)
 #app.config['SECRET_KEY'] = "supertopsecretprivatekey"
 #app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 #app.config["CACHE_TYPE"] = "null"
@@ -50,6 +49,7 @@ def get_ip():
 @app.before_request
 def make_session_permanent():
     session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(days=5)
     
 # start here
 @app.route('/')
