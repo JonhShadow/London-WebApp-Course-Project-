@@ -56,7 +56,7 @@ def make_session_permanent():
 def home():
     return redirect(url_for('london'))
 
-@app.route('/seattle', methods=["POST", "GET"])
+""" @app.route('/seattle', methods=["POST", "GET"])
 def seattle():
     session["user_name"] = get_ip()['ip']
     pkl_filename = 'static/model/seattle_model.pkl'
@@ -157,7 +157,8 @@ def seattle():
 
     map.save("templates/map.html")
     title = "Seatle Housing"
-    return render_template("housing.html", pred_form = price, title= title)
+    return render_template("housing.html", pred_form = price, title= title) 
+"""
 
 @app.route('/user', methods=["GET"])
 def get_session():
