@@ -4,6 +4,7 @@
 
 #### Developed in Python (Flask) and the machine learning part of the project was made using Python Scikit-learn library with a Gradient Boosting algorithm.
 
-<img src="https://i2.paste.pics/73219adad8031ca519d86d16b3956074.png" width="100" height="100">
+![image](https://user-images.githubusercontent.com/34392955/130813199-650d44ee-a65c-433d-8b96-9f6ee0dd649a.png)
+
 
 
